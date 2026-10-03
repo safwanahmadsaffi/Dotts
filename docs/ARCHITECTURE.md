@@ -1,16 +1,14 @@
-# Dotty - Architecture
-
-Dotty is the product name. `Pointr` is the internal JavaScript namespace retained by the extension runtime.
+# Pointr - Architecture
 
 How Pointr works, the decisions behind it, and the exact data contracts between its parts. Contracts in section 6 are binding: code on both sides of a message or HTTP call follows them exactly. Code comments refer to this file by section number.
 
 ## 1. Product in one paragraph
 
-A user who is unsure how to use a website opens the small Dotty widget (bottom-right launcher, or `Alt+X`) and types or speaks ONE goal ("pay my credit card bill"). Dotty looks at the current screen, decides the single next action, glides a large yellow ghost cursor to the right element, draws a yellow ring around it with the rest of the page dimmed, and shows a short caption. When the user performs the action, Dotty looks again and shows the next step, until the goal is done. Then the widget shows "You did it!" and goes quiet until the next goal. Dotty never clicks or types for the user and never speaks aloud.
+A user who is unsure how to use a website opens the small Pointr widget (bottom-right launcher, or `Alt+X`) and types or speaks ONE goal ("pay my credit card bill"). Pointr looks at the current screen, decides the single next action, glides a large yellow ghost cursor to the right element, draws a yellow ring around it with the rest of the page dimmed, and shows a short caption. When the user performs the action, Pointr looks again and shows the next step, until the goal is done. Then the widget shows "You did it!" and goes quiet until the next goal. Pointr never clicks or types for the user and never speaks aloud.
 
-Demo: three mock web apps (bank, pharmacy, grocery) running locally in Docker, plus a Demo Hub to reset them and tune random popups. Nothing in Dotty is specific to the mock apps; it also runs on real sites (tested by hand on Outlook and Amazon).
+Demo: three mock web apps (bank, pharmacy, grocery) running locally in Docker, plus a Demo Hub to reset them and tune random popups. Nothing in Pointr is specific to the mock apps; it also runs on real sites (tested by hand on Outlook and Amazon).
 
-Dotty is not a chatbot: there is no chat transcript, only a goal box and the on-page pointer.
+Pointr is not a chatbot: there is no chat transcript, only a goal box and the on-page pointer.
 
 ## 2. Decisions (and why)
 

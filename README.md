@@ -15,9 +15,7 @@ Tell Dotty one goal, typed or spoken, and it guides you through the real website
 
 </div>
 
-Built for the ML Empowerment Build Challenge for people who find websites hard to use: older adults, people with low vision, and anyone who freezes at a screen full of buttons. Dotty is not a chatbot. There is no chat window, just one goal box and a pointer.
-
-**Challenge fit:** Dotty turns AI literacy into a practical accessibility tool. A user states a real-world goal in plain language, Gemini interprets the live page, and Dotty guides the user without taking control. This makes everyday tasks such as managing money, refilling medicine, and ordering essentials more understandable and less error-prone.
+Built at ShellHacks for people who find websites hard to use: older adults, people with low vision, and anyone who freezes at a screen full of buttons. Dotty is not a chatbot. There is no chat window, just one goal box and a pointer.
 
 | | |
 |---|---|
@@ -57,19 +55,6 @@ Built for the ML Empowerment Build Challenge for people who find websites hard t
 ```
 
 Each step: the extension screenshots the tab with a number drawn on every button, link and field, and sends the picture plus the numbered list to the model. The model answers with ONE element number and a short instruction; the extension rings that element (pixel-exact, from the real page) and waits for the user. Dotty only looks again when something happens, and it often predicts the next step, so the next ring can appear about half a second after you act. Details and contracts: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
-
-## ML Empowerment Build Challenge submission
-
-The project is designed around the challenge requirements: a working AI application, a clear social-impact audience, a demonstrable workflow, and reproducible documentation.
-
-- **Problem:** Many people can state what they want to do online but cannot reliably find the correct control in crowded, unfamiliar interfaces.
-- **Solution:** Dotty converts a plain-language goal into one safe, visual next step on the current page. The person remains the decision-maker and performs every click and keystroke.
-- **Impact:** The same interaction model supports financial access, healthcare navigation, grocery access, and ordinary web tasks. It is useful for older adults, people with low vision, users with low digital confidence, and anyone facing a complex form.
-- **AI implementation:** Gemini receives the current screenshot, grounded element list, goal, and action history, then returns a validated structured step. Voice goals can be transcribed locally with faster-whisper.
-- **Evidence:** Three realistic demo applications, 19 end-to-end scenarios, recovery tests for popups/logout/reload/back/new-tab flows, voice tests, scanner tests, and a model bake-off are included in the repository.
-- **Responsible design:** Dotty never asks for a password, never clicks or types on the user's behalf, omits field values from the model's element list, and uses low-confidence informational guidance instead of guessing.
-
-For the complete Devpost-ready project story — Inspiration, What it does, How we built it, Challenges, Accomplishments, Learnings, and What's next — see [`docs/DEVPOST-SUBMISSION.md`](docs/DEVPOST-SUBMISSION.md).
 
 ## Run it
 
