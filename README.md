@@ -69,7 +69,7 @@ The project is designed around the challenge requirements: a working AI applicat
 - **Evidence:** Three realistic demo applications, 19 end-to-end scenarios, recovery tests for popups/logout/reload/back/new-tab flows, voice tests, scanner tests, and a model bake-off are included in the repository.
 - **Responsible design:** Dotty never asks for a password, never clicks or types on the user's behalf, omits field values from the model's element list, and uses low-confidence informational guidance instead of guessing.
 
-For the complete Devpost-ready project description, demo script, technical details, and judging-criteria mapping, see [`docs/DEVPOST-SUBMISSION.md`](docs/DEVPOST-SUBMISSION.md).
+For the complete Devpost-ready project story — Inspiration, What it does, How we built it, Challenges, Accomplishments, Learnings, and What's next — see [`docs/DEVPOST-SUBMISSION.md`](docs/DEVPOST-SUBMISSION.md).
 
 ## Run it
 

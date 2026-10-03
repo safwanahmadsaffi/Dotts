@@ -1,106 +1,75 @@
-# Dotty — Devpost submission brief
+# Dotty: A Patient Pointer for the Web
 
-## Project title
+## Inspiration
 
-**Dotty: A Patient Pointer for the Web**
+Navigating a new task in a web browser can be difficult, especially for older adults, people with low vision, and anyone who feels overwhelmed by a crowded screen. Having a tech-literate person available is not always possible.
 
-## One-line description
+Dotty is our answer: an AI-powered browser overlay that appears when the user asks for help. Instead of taking over the browser or forcing the user into a chat, Dotty calmly points to the next control and lets the person stay in charge.
 
-An accessible AI guide that helps people complete real website tasks one step at a time while keeping every decision and action in the user's hands.
+## What it does
 
-## Problem
-
-The web assumes that users can identify the right control in a dense interface, recover from unexpected popups, and understand unfamiliar forms. That assumption excludes older adults, people with low vision, people with low digital confidence, and anyone who is overwhelmed by a crowded screen.
-
-Most AI assistants solve this by taking over through a chat interface or by acting on behalf of the user. That can be difficult to understand, hard to trust, and unsafe for sensitive tasks such as banking or healthcare.
-
-## Solution
-
-Dotty is a Chrome extension with one simple interaction: the user says or types one goal, such as:
+The user tells Dotty one goal, typed or spoken:
 
 - “Pay my credit card bill.”
 - “What are my allergies?”
 - “Order milk, eggs and bread for pickup.”
 
-Dotty examines the current page and shows one large, high-contrast pointer and plain-language instruction. The user performs the action, and Dotty observes the result before giving the next step. It can recover from popups, wrong clicks, logout, reloads, Back navigation, and new tabs without losing the original goal.
+Dotty examines the current website and gives exactly one next step. The page dims, a large yellow cursor glides toward the relevant control, a high-contrast ring highlights it, and a short caption explains what to do. The user performs the click or keystroke, and Dotty observes the result before showing the next step.
 
-Dotty is intentionally not a chatbot. It is a calm, transparent bridge between what a person wants to do and the controls already present on the website.
+- **No chat window:** one goal box and one visual pointer.
+- **No takeover:** Dotty never clicks, types, or asks for a password on the user's behalf.
+- **Real-world recovery:** it handles popups, wrong clicks, logout, reloads, Back navigation, and new tabs.
+- **Information goals:** it can guide the user to account or health information and point at the answer.
+- **Push-to-talk voice:** `Alt+X` starts and stops recording; transcription runs locally with faster-whisper.
 
-## Key features
+## How we built it
 
-1. **One goal, one next step** — reduces cognitive load instead of presenting a long plan.
-2. **Visual grounding** — Gemini chooses from numbered live elements; Dotty rings the real DOM element rather than guessing screen coordinates.
-3. **User-controlled execution** — Dotty never clicks, types, or requests a password for the user.
-4. **Accessible presentation** — Atkinson Hyperlegible, high-contrast yellow guidance, page dimming, keyboard access, and short instructions.
-5. **Resilient recovery** — handles interruptions and follows the user's current page back toward the original goal.
-6. **Voice input** — push-to-talk goal entry with local faster-whisper transcription.
-7. **Information goals** — can navigate to an account or health record and point out the answer without pretending to be the source of truth.
-8. **Privacy-aware contracts** — the element list excludes field values; credentials are never requested from or repeated to the model.
+- **Chrome extension:** Manifest V3 and plain JavaScript. A scanner numbers visible buttons, links, fields, tabs, and text landmarks. The overlay renders the dim layer, ring, cursor, and caption. A watcher detects when the user acts.
+- **Set-of-Marks grounding:** each turn captures the tab with numbers drawn on the page and sends the screenshot plus the matching element list to the model. The model must return one valid element number and one short instruction.
+- **AI backend:** Node.js 24 and TypeScript call Google Gemini with structured JSON output. The response is schema-validated and checked against the live element list before it reaches the user. A second Gemini key can rotate in for transient failures, and slow requests can be hedged.
+- **Local voice:** faster-whisper runs in Docker on the user's machine, so push-to-talk dictation does not need to leave the local voice service.
+- **Realistic demo apps:** React, Vite, and TypeScript mock banking, pharmacy, and grocery sites include popups, promos, dense navigation, and intentional dead ends.
+- **Evaluation:** Playwright drives the real unpacked extension across 19 scenarios, including hero tasks, popups, wrong clicks, logout recovery, reload, Back, new tabs, and information goals.
 
-## Technical implementation
+## Challenges we ran into
 
-### Sponsor-aligned technology story
+- **Accuracy versus speed:** a visual model must choose the correct live element without inventing coordinates or clicking the wrong control. We built a fixture-based bake-off and structured validation around the one-step contract.
+- **Latency:** a new model request after every action can feel slow. Dotty is event-driven rather than time-polled, predicts a possible next step, and can hedge a slow request.
+- **Off-path users:** people click the wrong thing, press Back, reload, or log out. The original goal must survive these changes while the model replans from the current screen.
+- **Messy websites:** popups, icon-only controls, similar buttons, dynamic pages, and new tabs required a semantic scanner and recovery logic rather than app-specific selectors.
+- **Responsible guidance:** the assistant must be useful without taking control. Password values are never sent as element labels, and low-confidence situations produce an informational response instead of a random target.
 
-For the Build Challenge submission, Dotty is presented as a sponsor-aligned accessibility project. The sponsor technologies below map to concrete parts of the product and its evaluation plan:
+## Accomplishments that we're proud of
 
-- **Featherless AI** — a potential hosted-model path for Dotty's grounded next-step reasoning and model comparison. The model must return one safe, structured action from the live page rather than operate the page autonomously.
-- **Backboard** — a potential evaluation and session-context layer for preserving the user's original goal, recovery history, and accessibility preferences across a guided task. Sensitive credentials and field values remain excluded.
-- **Momen** — a potential rapid-prototyping and presentation layer for the accessible onboarding flow, challenge landing page, or impact dashboard. The core browser-guidance experience remains the Dotty extension.
-- **Adaption Labs** — a potential experimentation and impact-measurement layer for comparing task completion, recovery, and confidence outcomes for users who receive guided assistance.
-- **Mobbin** — a design-research reference for studying accessible onboarding, focused task flows, and low-cognitive-load interaction patterns before refining Dotty's interface.
+- Built an accessibility-focused AI interaction that is deliberately **not** a chatbot and **not** an autonomous browser agent.
+- Made the same interaction model work across banking, healthcare, grocery, and ordinary web workflows.
+- Added a large high-contrast pointer, page dimming, short instructions, Atkinson Hyperlegible, keyboard access, and push-to-talk voice.
+- Implemented recovery for real interruptions instead of only demonstrating a perfect happy path.
+- Created three realistic demo apps and a Demo Hub so judges can reproduce the experience locally.
+- Added automated coverage for 19 end-to-end scenarios, visual states, voice input, scanner edge cases, and model fixtures.
 
-These are sponsor-aligned integrations and extension opportunities for the challenge narrative. Only technologies listed in the **Implemented prototype** section are claimed as currently running in this repository.
+## What we learned
 
-### Implemented prototype
+We learned that helpful AI guidance is less about producing a long answer and more about choosing the right next action in context. A reliable browser guide needs:
 
-- **Client:** Chrome Manifest V3 extension in plain JavaScript.
-- **Grounding:** DOM scanner plus Set-of-Marks screenshots. Every model-selected target must exist in the current element list.
-- **AI:** Google Gemini with structured JSON output and schema validation.
-- **Backend:** Node.js 24 and TypeScript. API keys stay on the backend.
-- **Voice:** faster-whisper in a local CPU container; voice is push-to-talk, not an always-on listener.
-- **Demo apps:** React + Vite + TypeScript applications for banking, pharmacy, and grocery workflows.
-- **Validation:** Playwright end-to-end scenarios, visual checks, voice checks, scanner cases, and captured-screen model bake-off tooling.
+- grounding in the current DOM and screenshot rather than guessed coordinates;
+- a small, strict response contract that can be validated;
+- an event-driven loop that waits for the person to act;
+- recovery based on the original goal, not a brittle sequence of selectors;
+- accessibility decisions built into the interaction model, not added as decoration;
+- clear boundaries so the user understands what the AI did and did not do.
 
-### Sponsor integration plan
+## What's next for Dotty: A Patient Pointer for the Web
 
-If sponsor access is available during the build period, the integration order is:
+1. **Sponsor model comparison:** add Featherless AI as an optional provider behind the existing structured `Step` contract and compare grounding accuracy, latency, and cost with Gemini.
+2. **Privacy-preserving context:** evaluate Backboard for non-sensitive task context and recovery history while keeping passwords, payment numbers, health identifiers, and raw field values out of stored context.
+3. **Impact measurement:** use Adaption Labs to measure completion rate, recovery after interruptions, time-to-completion, and user confidence.
+4. **Accessible onboarding:** use Momen to prototype a simple public onboarding and impact experience.
+5. **Design refinement:** use Mobbin research to improve the goal-entry, guidance, and completion flows without increasing cognitive load.
+6. **Broader access:** improve multilingual voice input, support more assistive-technology patterns, and explore privacy-first deployment options for sensitive workflows.
 
-1. Use **Featherless AI** as an optional provider behind the existing structured `Step` contract, then compare accuracy and latency with the current provider.
-2. Use **Backboard** for non-sensitive task context and explicit evaluation traces, never for passwords, payment numbers, health identifiers, or raw field values.
-3. Use **Momen** to package the onboarding and impact story into a simple public-facing project experience.
-4. Use **Adaption Labs** to measure task success, recovery after interruptions, time-to-completion, and user confidence.
-5. Use **Mobbin** research to refine the visual hierarchy and reduce cognitive load in the goal-entry and completion states.
+Dotty's long-term goal is simple: make essential digital services easier to use without removing the person's agency.
 
-The product theme remains consistent across every integration: AI should make essential digital services easier to use while preserving user agency, transparency, and privacy.
+## Built with
 
-## Demonstration script
-
-1. Open the Demo Hub and set the Harbor Bank popup chance to **Always**.
-2. Open Harbor Bank, start logged out, and submit: **“Pay my credit card bill.”**
-3. Show Dotty dismissing the paperless popup before guiding the sign-in and payment flow.
-4. Click a wrong control or log out mid-task. Show Dotty recovering without restarting the user's goal.
-5. Repeat on SunPlaza Pharmacy with: **“What are my allergies?”** Dotty navigates to the record and points out the answer.
-6. Repeat on FreshCart with: **“Order milk, eggs and bread for pickup.”** Show search, cart, pickup window, and confirmation.
-7. Finish with voice input using `Alt+X`.
-
-## Judging criteria mapping
-
-| Criterion | How Dotty demonstrates it |
-|---|---|
-| Technical Implementation (30%) | Live screenshot + DOM grounding, structured Gemini output, schema validation, event-driven loop, voice pipeline, recovery state machine, and automated scenarios. |
-| Creativity & Innovation (20%) | A non-chat, non-autonomous AI interaction model: the AI interprets and points, while the person stays in control. |
-| Real-World Impact (20%) | Makes banking, healthcare, grocery, and everyday web tasks more accessible to people excluded by dense interfaces. |
-| Project Design & UX (15%) | High-contrast pointer, short instructions, one-goal flow, keyboard/voice entry, and no distracting transcript. |
-| Presentation & Documentation (15%) | Reproducible local demo, three realistic apps, demo script, architecture contracts, supported goals, and automated evidence. |
-
-## Responsible AI and limitations
-
-Dotty is assistive guidance, not an autonomous agent or a replacement for a bank, pharmacy, clinician, or accessibility professional. It can be uncertain when a page is ambiguous; in that case it reports low confidence rather than inventing a target. The current prototype is English-only, requires Chrome and a local backend, does not operate inside iframes, and relies on the website's accessible labels. These boundaries are explicit so users can make informed decisions.
-
-## Links and submission checklist
-
-- **Repository:** link to this GitHub repository on Devpost.
-- **Live demo:** use the local Demo Hub walkthrough or record the demonstration script above.
-- **Screenshots/video:** capture the goal box, numbered guidance ring, popup recovery, information answer, and completion state.
-- **Team details:** add each contributor and role on Devpost.
-- **Project description:** use this document as the source for the problem, solution, features, technology, and impact sections.
+Google Gemini · Chrome Manifest V3 · JavaScript · TypeScript · Node.js 24 · React · Vite · faster-whisper · Python · Docker · Playwright · CSS · HTML
