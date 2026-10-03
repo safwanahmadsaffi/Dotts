@@ -1,4 +1,6 @@
-# Pointr demo apps - specification
+# Dotty demo apps - specification
+
+Dotty is the product name; `Pointr` below refers only to the extension's internal namespace and compatibility contracts.
 
 Three fake-but-realistic web apps + a Demo Hub, used to demo Pointr to ShellHacks judges. Pointr (the Chrome extension) must treat them like any real website, so these apps must look and behave like real sites and contain NOTHING made for Pointr.
 
