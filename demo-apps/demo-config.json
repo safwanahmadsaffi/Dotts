@@ -1,0 +1,21 @@
+{
+  "demoUser": {
+    "username": "safwan",
+    "password": "1234",
+    "name": "Safwan",
+    "firstName": "Safwan",
+    "email": "safwan@example.com",
+    "phone": "(305) 555-0147",
+    "address": "742 Palm Ave, Apt 3",
+    "city": "Miami",
+    "state": "FL",
+    "zip": "33135"
+  },
+  "apps": {
+    "hub": "http://localhost:3000",
+    "bank": "http://localhost:3001",
+    "pharmacy": "http://localhost:3002",
+    "grocery": "http://localhost:3003"
+  },
+  "backend": "http://localhost:8787"
+}

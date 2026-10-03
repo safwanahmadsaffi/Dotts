@@ -1,0 +1,15 @@
+{
+  "name": "dotty-demo-apps",
+  "private": true,
+  "version": "1.1.0",
+  "workspaces": [
+    "shared",
+    "hub",
+    "bank",
+    "pharmacy",
+    "grocery"
+  ],
+  "scripts": {
+    "build": "npm run build -w shared && npm run build -w bank && npm run build -w pharmacy && npm run build -w grocery"
+  }
+}
